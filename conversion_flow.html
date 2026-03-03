@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IM智己汽车 User Conversion Flow</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose'
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #24292e;
+            background-color: #ffffff;
+        }
+        h1, h2, h3 {
+            color: #24292e;
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+        h1 {
+            font-size: 2em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+        h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+        }
+        code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+        }
+        pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+        }
+        pre code {
+            padding: 0;
+            background-color: transparent;
+        }
+        /* Table Styles */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            display: block;
+            overflow-x: auto;
+        }
+        th, td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+        th {
+            font-weight: 600;
+            background-color: #f6f8fa;
+        }
+        tr {
+            background-color: #fff;
+            border-top: 1px solid #c6cbd1;
+        }
+        tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+        /* Mermaid Diagram Container */
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+<h1>IM智己汽车 User Conversion Flow (Feb 2026 Cohort)</h1>
+
+<div id="data-analysis" style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #e1e4e8;">
+    <h2 style="margin-top: 0; border-bottom: none;">Automated Data Analysis (Live)</h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+            <h3 style="font-size: 1.1em; color: #0366d6;">1. Cohort Statistics</h3>
+            <ul style="padding-left: 20px;">
+                <li><strong>Cohort Size:</strong> 2112 Users</li>
+                <li><strong>Global Records:</strong> 2989 Records</li>
+            </ul>
+            
+            <h3 style="font-size: 1.1em; color: #0366d6;">2. Attribution Analysis</h3>
+            <ul style="padding-left: 20px;">
+                <li><strong>Locked Users:</strong> 16</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h3 style="font-size: 1.1em; color: #0366d6;">3. Influence Breakdown</h3>
+            <ul style="padding-left: 20px;">
+                <li><strong>本渠道锁单 (6)</strong>
+                    <ul>
+                        <li>直接锁单: 4</li>
+                        <li>归因锁单: 2</li>
+                    </ul>
+                </li>
+                <li><strong>辅助锁单 (10)</strong>
+                    <ul>
+                        <li>首触辅助: 2</li>
+                        <li>过程助攻: 2</li>
+                        <li>锁后触达/其他: 6</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <h3 style="font-size: 1.1em; color: #0366d6; margin-top: 20px;">4. Detailed Sample (Top 16)</h3>
+    <div style="overflow-x: auto;">
+        <table class="dataframe dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;"></th>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">total_clues</th>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">min_im_rank</th>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">is_first_touch</th>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">is_last_touch</th>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">is_im_lock</th>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">0</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Direct Lock</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">1</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">3</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">2</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Post-Lock Interaction</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">2</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Attributed Lock</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">3</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">2</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">First Touch Assist</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">4</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">4</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">4</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Post-Lock Interaction</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">5</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Direct Lock</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">6</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">5</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">5</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Attributed Lock</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">7</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Direct Lock</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">8</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">2</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">2</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Middle Assist</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">9</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">1</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">First Touch Assist</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">10</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">7</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">7</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Post-Lock Interaction</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">11</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">4</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">4</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">True</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Direct Lock</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">12</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">3</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">3</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Post-Lock Interaction</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">13</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">5</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">5</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Post-Lock Interaction</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">14</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">3</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">3</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Middle Assist</td>
+    </tr>
+    <tr>
+      <th style="background-color: #f6f8fa; padding: 8px; border: 1px solid #dfe2e5; text-align: left;">15</th>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">2</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">2</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">False</td>
+      <td style="padding: 8px; border: 1px solid #dfe2e5;">Post-Lock Interaction</td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+</div>
+
+<div class="mermaid">sankey-beta
+    Global_Converters,IM_First_Touch,6
+    Global_Converters,Other_First_Touch,10
+
+    IM_First_Touch,IM_Last_Touch,3
+    IM_First_Touch,Other_Last_Touch,3
+
+    Other_First_Touch,IM_Last_Touch,1
+    Other_First_Touch,Other_Last_Touch,9
+
+    IM_Last_Touch,Direct_Lock,4
+
+    Other_Last_Touch,Direct_Lock,2
+    Other_Last_Touch,Other_Assisted,10
+</div>
+<h2>Flow Analysis (Based on Refined Last Touch Logic)</h2>
+<div class="mermaid">graph TD
+    Start[IM智己汽车 Cohort<br/>2112 Users] -->|99.2%| NonConv[Non-Converters<br/>2096 Users]
+    Start -->|0.8%| A[Global Converters<br/>16 Users]
+
+    A --> B{Entry Point?}
+    B -->|IM First Touch: 6| C[IM Started Journey<br/>37.5%]
+    B -->|Other First Touch: 10| D[IM Joined Mid-Stream<br/>62.5%]
+
+    C --> E{Last Interaction<br/>Before Lock?}
+    D --> E
+
+    E -->|IM Last Touch: 4| F[IM was Closer<br/>25.0%]
+    E -->|Other Last Touch: 12| G[Other Channel Closer<br/>75.0%]
+
+    F -->|100%| H[Direct Lock<br/>IM Channel]
+
+    G --> I{Attribution?}
+    G -->|IM Direct: 2| H
+    G -->|Other Assisted: 10| J[Assisted Lock<br/>Other Channel]
+
+    style Start fill:#f9f,stroke:#333,stroke-width:2px
+    style NonConv fill:#eee,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5
+    style A fill:#bbf,stroke:#333,stroke-width:2px
+    style H fill:#bfb,stroke:#333,stroke-width:2px
+    style F fill:#ff9,stroke:#333,stroke-width:2px
+</div>
+<h2>中英文术语对照表 (Terminology)</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">英文术语 (English Term)</th>
+<th style="text-align: left;">中文术语 (Chinese Term)</th>
+<th style="text-align: left;">解释 (Explanation)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Cohort</strong></td>
+<td style="text-align: left;">初始人群</td>
+<td style="text-align: left;">本次分析选定的特定时间段（0201-0227）内新增的用户群体，共 2112 人。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Global Converters</strong></td>
+<td style="text-align: left;">全渠道锁单用户</td>
+<td style="text-align: left;">在整个历史数据集中，无论通过哪个渠道，最终完成了锁单（Lock）的用户，共 16 人。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Non-Converters</strong></td>
+<td style="text-align: left;">未转化用户</td>
+<td style="text-align: left;">在整个历史数据集中未产生锁单行为的用户。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>First Touch</strong></td>
+<td style="text-align: left;">首次触点</td>
+<td style="text-align: left;">用户在该品牌全生命周期中的第一次交互记录（最早的时间点）。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Last Touch</strong></td>
+<td style="text-align: left;">末次触点</td>
+<td style="text-align: left;">用户在产生“锁单”行为之前的最后一次交互记录（最晚的时间点，且必须早于锁单时间）。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Direct Lock</strong></td>
+<td style="text-align: left;">直接锁单</td>
+<td style="text-align: left;">最终锁单归因于当前渠道（IM智己汽车），即该渠道是用户转化的直接来源。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Assisted Lock</strong></td>
+<td style="text-align: left;">辅助锁单</td>
+<td style="text-align: left;">用户最终锁单了，但归因于其他渠道。当前渠道可能起到了辅助作用（如首次触点），但不是最终转化点。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Pivot (Long-to-Wide)</strong></td>
+<td style="text-align: left;">透视/转置（长改宽）</td>
+<td style="text-align: left;">将原始数据中“一行一个度量”的长表格式，转换为“一行一个用户”的宽表格式，以便进行用户维度的聚合分析。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Data Sparse</strong></td>
+<td style="text-align: left;">数据稀疏</td>
+<td style="text-align: left;">指宽表中存在大量空值（NaN）的情况，例如并非所有用户都有锁单时间。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Attribution Logic</strong></td>
+<td style="text-align: left;">归因逻辑</td>
+<td style="text-align: left;">确定哪个渠道应该对用户的最终转化负责的规则（如：首次触点归因、末次触点归因）。</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
