@@ -54,10 +54,10 @@ def main():
     
     # Get the directory of the current script to find other scripts
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    calculate_script = os.path.join(base_dir, 'calculate_leads.py')
-    dashboard_script = os.path.join(base_dir, 'dashboard_analysis.py')
+    calculate_script = os.path.join(base_dir, 'Dashboard_Step1_Leads.py')
+    dashboard_script = os.path.join(base_dir, 'Dashboard_Step3_Report.py')
     
-    # Run calculate_leads.py
+    # Run Dashboard_Step1_Leads.py
     cmd1 = [
         sys.executable, calculate_script,
         '--excel', excel_path,

@@ -3,3 +3,9 @@ source/
 __pycache__/
 .DS_Store
 *.pyc
+
+# Data Files
+渠道归因（来源矩阵)_data.csv
+渠道归因（行渠道给列渠道贡献了多少锁单用户）_data.csv
+直播业务_data_2025.csv
+直播业务_data_202602.csv

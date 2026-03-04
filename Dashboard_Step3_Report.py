@@ -356,7 +356,7 @@ def generate_stats_html(df, conversion_stats=None, conversion_report_url=None):
     # Conversion Stats Block
     conversion_html = ""
     if conversion_stats:
-        report_link = conversion_report_url if conversion_report_url else 'IM智己汽车 0201～0227_report.html'
+        report_link = conversion_report_url if conversion_report_url else '#'
         conversion_html = f"""
     <div class="stat-box">
         <h3>转化归因 (Attribution & Influence)</h3>
@@ -446,7 +446,7 @@ def main():
         print("Running conversion analysis...")
         try:
             # If we know the output path for conversion report, pass it
-            # But wait, dashboard_analysis calls analyze_conversion...
+            # But wait, Dashboard_Step3_Report calls analyze_conversion...
             # We should probably pass the output path to analyze_conversion if we want it to save there
             
             # If conversion_output_file is provided, we tell analyze_conversion to save there
