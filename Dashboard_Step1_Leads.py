@@ -97,6 +97,9 @@ def main():
     sessions.sort(key=lambda x: x['start_time'])
 
     print(f"Loaded {len(sessions)} valid sessions.")
+    if not sessions:
+        print("No valid sessions found in Excel. Exiting.")
+        return
 
     # Load CSV
     # Try utf-16 with tab separator first based on previous inspection
@@ -111,9 +114,9 @@ def main():
     # Parse lead times
     df_leads['parsed_time'] = pd.to_datetime(df_leads['lc_create_time'], errors='coerce')
 
-    # Filter strictly as per debug_leads_gap.py (Cohort Logic)
-    start_date = pd.Timestamp("2026-02-01")
-    end_date = pd.Timestamp("2026-02-27 23:59:59")
+    start_date = pd.Timestamp(sessions[0]['start_time'])
+    end_date = pd.Timestamp(max(s['end_time'] for s in sessions))
+    print(f"Using cohort time range (from Excel sessions): {start_date} to {end_date}")
     
     # Extract channel name from filename or use default
     # If the CSV filename contains "IM智己|未来智舱", we might want to use that as channel name?
@@ -143,7 +146,7 @@ def main():
     mask_channel = df_leads['lc_small_channel_name'] == target_channel
 
     df_leads_filtered = df_leads[mask_time & mask_channel].copy()
-    print(f"Filtered {len(df_leads_filtered)} leads in cohort (2026-02-01 to 2026-02-27, IM智己汽车).")
+    print(f"Filtered {len(df_leads_filtered)} leads in cohort ({start_date} to {end_date}, {target_channel}).")
 
     # Match leads to sessions
     for index, lead in df_leads_filtered.iterrows():

@@ -14,9 +14,9 @@ import argparse
 # Append current directory to path to allow import
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 try:
-    from analyze_im_conversion import analyze_conversion
+    from Dashboard_Step2_Conversion import analyze_conversion
 except ImportError:
-    print("Warning: Could not import analyze_im_conversion.py")
+    print("Warning: Could not import Dashboard_Step2_Conversion.py")
     analyze_conversion = None
 
 # Set style for charts - using a built-in style that supports Chinese characters might be tricky
@@ -29,6 +29,8 @@ def load_data(filepath):
     df = pd.read_csv(filepath)
     # Ensure start_time is datetime
     df['start_time'] = pd.to_datetime(df['start_time'])
+    if 'end_time' in df.columns:
+        df['end_time'] = pd.to_datetime(df['end_time'])
     return df
 
 def generate_html_report(df, scale_fig, scenario_fig, marginal_fig, stats_html, scale_insights, scenario_insights, marginal_insights, output_file='dashboard_report.html'):
@@ -356,7 +358,7 @@ def generate_stats_html(df, conversion_stats=None, conversion_report_url=None):
     # Conversion Stats Block
     conversion_html = ""
     if conversion_stats:
-        report_link = conversion_report_url if conversion_report_url else '#'
+        report_link = conversion_report_url if conversion_report_url else 'IM智己汽车 0201～0227_report.html'
         conversion_html = f"""
     <div class="stat-box">
         <h3>转化归因 (Attribution & Influence)</h3>
@@ -458,6 +460,17 @@ def main():
             c_kwargs = {}
             if 'output_file' in sig.parameters and conversion_output_file:
                  c_kwargs['output_file'] = conversion_output_file
+
+            cohort_start_date = df['start_time'].min()
+            if 'end_time' in df.columns:
+                cohort_end_date = df['end_time'].max()
+            else:
+                cohort_end_date = df['start_time'].max()
+
+            if 'start_date' in sig.parameters:
+                c_kwargs['start_date'] = cohort_start_date
+            if 'end_date' in sig.parameters:
+                c_kwargs['end_date'] = cohort_end_date
             
             conversion_stats = analyze_conversion(raw_data_file, **c_kwargs)
         except Exception as e:
