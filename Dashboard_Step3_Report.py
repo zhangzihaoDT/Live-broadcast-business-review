@@ -33,7 +33,7 @@ def load_data(filepath):
         df['end_time'] = pd.to_datetime(df['end_time'])
     return df
 
-def generate_html_report(df, scale_fig, scenario_fig, marginal_fig, stats_html, scale_insights, scenario_insights, marginal_insights, output_file='dashboard_report.html'):
+def generate_html_report(df, scale_fig, scenario_fig, marginal_fig, daily_fig, stats_html, scale_insights, scenario_insights, marginal_insights, daily_insights, output_file='dashboard_report.html'):
     # Derive title from output filename if possible, otherwise default
     title = "直播业务仪表盘 (Live Stream Economic Dashboard)"
     if output_file:
@@ -156,6 +156,15 @@ def generate_html_report(df, scale_fig, scenario_fig, marginal_fig, stats_html, 
     <div class="analysis-text">
         <strong>分析结论：</strong><br>
         {marginal_insights}
+    </div>
+</div>
+
+<h2>4. 每日表现分析 (Daily Performance)</h2>
+<div class="chart-container">
+    {daily_fig.to_html(full_html=False, include_plotlyjs=False)}
+    <div class="analysis-text">
+        <strong>分析结论：</strong><br>
+        {daily_insights}
     </div>
 </div>
 
@@ -314,6 +323,183 @@ def marginal_return_analysis(df):
     
     return marginal_return_analysis_plotly(df), insights
 
+def daily_performance_analysis_plotly(df, start_date=None, end_date=None):
+    # Extract date from start_time
+    df['date'] = df['start_time'].dt.date
+    
+    # Filter by date range if provided
+    if start_date:
+        start_date_dt = pd.to_datetime(start_date).date()
+        df = df[df['date'] >= start_date_dt]
+    
+    if end_date:
+        end_date_dt = pd.to_datetime(end_date).date()
+        df = df[df['date'] <= end_date_dt]
+    
+    # Group by date
+    daily_stats = df.groupby('date').agg({
+        'unique_leads': 'sum',
+        '广告消耗': 'sum',
+        'session': 'count'
+    }).reset_index()
+    
+    # Calculate daily CPL
+    daily_stats['CPL'] = daily_stats.apply(
+        lambda row: row['广告消耗'] / row['unique_leads'] if row['unique_leads'] > 0 else 0,
+        axis=1
+    )
+    
+    # Rename columns for clarity
+    daily_stats = daily_stats.rename(columns={
+        'unique_leads': '每日线索数',
+        '广告消耗': '每日消耗',
+        'session': '直播场数',
+        'CPL': '每日CPL'
+    })
+    
+    # Create subplots: 3 rows, 1 column
+    fig = make_subplots(
+        rows=3, cols=1,
+        subplot_titles=('每日线索数 (Daily Leads)', '每日CPL (Daily CPL)', '每日直播场数 (Daily Sessions)'),
+        vertical_spacing=0.1
+    )
+    
+    # Add traces for each metric
+    fig.add_trace(
+        go.Bar(x=daily_stats['date'], y=daily_stats['每日线索数'], name='线索数', marker_color='#636EFA'),
+        row=1, col=1
+    )
+    
+    fig.add_trace(
+        go.Scatter(x=daily_stats['date'], y=daily_stats['每日CPL'], name='CPL', mode='lines+markers', marker_color='#EF553B'),
+        row=2, col=1
+    )
+    
+    fig.add_trace(
+        go.Bar(x=daily_stats['date'], y=daily_stats['直播场数'], name='场数', marker_color='#00CC96'),
+        row=3, col=1
+    )
+    
+    # Update layout
+    fig.update_layout(
+        title_text="每日表现分析 (Daily Performance Analysis)",
+        height=900,
+        showlegend=True,
+        template='plotly_white'
+    )
+    
+    # Update y-axis labels
+    fig.update_yaxes(title_text="线索数", row=1, col=1)
+    fig.update_yaxes(title_text="CPL (¥)", row=2, col=1)
+    fig.update_yaxes(title_text="场数", row=3, col=1)
+    
+    # Update x-axis labels
+    fig.update_xaxes(title_text="日期", row=3, col=1)
+    
+    return fig, daily_stats
+
+def daily_performance_analysis(df, start_date=None, end_date=None):
+    print("\n" + "="*30)
+    print("4. 每日表现分析 (Daily Performance Analysis)")
+    print("="*30)
+    
+    # Extract date from start_time
+    df['date'] = df['start_time'].dt.date
+    
+    # Filter by date range if provided
+    if start_date:
+        start_date_dt = pd.to_datetime(start_date).date()
+        df = df[df['date'] >= start_date_dt]
+        print(f"筛选开始日期: {start_date}")
+    
+    if end_date:
+        end_date_dt = pd.to_datetime(end_date).date()
+        df = df[df['date'] <= end_date_dt]
+        print(f"筛选结束日期: {end_date}")
+    
+    # Group by date
+    daily_stats = df.groupby('date').agg({
+        'unique_leads': 'sum',
+        '广告消耗': 'sum',
+        'session': 'count'
+    }).reset_index()
+    
+    # Calculate daily CPL
+    daily_stats['CPL'] = daily_stats.apply(
+        lambda row: row['广告消耗'] / row['unique_leads'] if row['unique_leads'] > 0 else 0,
+        axis=1
+    )
+    
+    # Rename columns for clarity
+    daily_stats = daily_stats.rename(columns={
+        'unique_leads': '每日线索数',
+        '广告消耗': '每日消耗',
+        'session': '直播场数',
+        'CPL': '每日CPL'
+    })
+    
+    # Print daily statistics
+    print("\n每日表现统计 (Daily Performance Statistics):")
+    print("="*60)
+    print(f"{'日期':<12} {'线索数':<8} {'消耗(¥)':<12} {'CPL(¥)':<10} {'场数':<6}")
+    print("-"*60)
+    
+    for _, row in daily_stats.iterrows():
+        date_str = row['date'].strftime('%Y-%m-%d')
+        leads = int(row['每日线索数'])
+        spend = f"{row['每日消耗']:,.2f}"
+        cpl = f"{row['每日CPL']:.2f}"
+        sessions = int(row['直播场数'])
+        print(f"{date_str:<12} {leads:<8} {spend:<12} {cpl:<10} {sessions:<6}")
+    
+    # Calculate summary statistics
+    total_days = len(daily_stats)
+    avg_leads = daily_stats['每日线索数'].mean()
+    avg_cpl = daily_stats['每日CPL'].mean()
+    avg_sessions = daily_stats['直播场数'].mean()
+    
+    # Find best and worst performing days
+    if not daily_stats.empty:
+        best_day = daily_stats.loc[daily_stats['每日线索数'].idxmax()]
+        worst_day = daily_stats.loc[daily_stats['每日线索数'].idxmin()]
+        
+        insights = f"""
+    分析时间范围: {start_date if start_date else '数据起始'} 至 {end_date if end_date else '数据结束'}
+    总分析天数: {total_days} 天
+    
+    <strong>关键统计指标:</strong>
+    <ul>
+        <li>平均每日线索数: <strong>{avg_leads:.1f}</strong></li>
+        <li>平均每日CPL: <strong>¥{avg_cpl:.2f}</strong></li>
+        <li>平均每日直播场数: <strong>{avg_sessions:.1f}</strong></li>
+    </ul>
+    
+    <strong>最佳表现日:</strong> {best_day['date'].strftime('%Y-%m-%d')}
+    <ul>
+        <li>线索数: <strong>{int(best_day['每日线索数'])}</strong></li>
+        <li>CPL: <strong>¥{best_day['每日CPL']:.2f}</strong></li>
+        <li>直播场数: <strong>{int(best_day['直播场数'])}</strong></li>
+    </ul>
+    
+    <strong>最差表现日:</strong> {worst_day['date'].strftime('%Y-%m-%d')}
+    <ul>
+        <li>线索数: <strong>{int(worst_day['每日线索数'])}</strong></li>
+        <li>CPL: <strong>¥{worst_day['每日CPL']:.2f}</strong></li>
+        <li>直播场数: <strong>{int(worst_day['直播场数'])}</strong></li>
+    </ul>
+    
+    <strong>分析结论:</strong>
+    通过每日趋势分析，可以识别出表现波动模式。线索数的峰值通常与特定营销活动或高消耗场次相关。
+    如果CPL在特定日期异常升高，需要检查该日的转化效率或流量质量。
+        """
+    else:
+        insights = "在指定时间范围内没有找到数据。"
+    
+    # Generate plot
+    fig, _ = daily_performance_analysis_plotly(df, start_date, end_date)
+    
+    return fig, insights
+
 def generate_stats_html(df, conversion_stats=None, conversion_report_url=None):
     total_sessions = len(df)
     total_leads = df['unique_leads'].sum()
@@ -431,6 +617,9 @@ def main():
     parser.add_argument('--raw', required=True, help='Path to the raw leads CSV')
     parser.add_argument('--output', default='dashboard_report.html', help='Path to the output dashboard HTML')
     parser.add_argument('--conversion-output', help='Path to the output conversion HTML (optional, to link correctly)')
+    parser.add_argument('--channel', '-c', help='Target channel name for conversion analysis (auto-detected from filename if not specified)')
+    parser.add_argument('--start-date', '-s', help='Cohort start date (YYYY-MM-DD), default: from session data')
+    parser.add_argument('--end-date', '-e', help='Cohort end date (YYYY-MM-DD), default: from session data')
     
     args = parser.parse_args()
     
@@ -438,6 +627,9 @@ def main():
     raw_data_file = args.raw
     output_file = args.output
     conversion_output_file = args.conversion_output
+    target_channel = args.channel
+    start_date = args.start_date
+    end_date = args.end_date
     
     df = load_data(input_file)
     print(f"Loaded {len(df)} sessions for analysis.")
@@ -461,16 +653,26 @@ def main():
             if 'output_file' in sig.parameters and conversion_output_file:
                  c_kwargs['output_file'] = conversion_output_file
 
-            cohort_start_date = df['start_time'].min()
-            if 'end_time' in df.columns:
-                cohort_end_date = df['end_time'].max()
+            # Use user-specified dates if provided, otherwise use dates from session data
+            if start_date:
+                cohort_start_date = start_date
             else:
-                cohort_end_date = df['start_time'].max()
+                cohort_start_date = df['start_time'].min()
+            
+            if end_date:
+                cohort_end_date = end_date
+            else:
+                if 'end_time' in df.columns:
+                    cohort_end_date = df['end_time'].max()
+                else:
+                    cohort_end_date = df['start_time'].max()
 
             if 'start_date' in sig.parameters:
                 c_kwargs['start_date'] = cohort_start_date
             if 'end_date' in sig.parameters:
                 c_kwargs['end_date'] = cohort_end_date
+            if 'target_channel' in sig.parameters and target_channel:
+                c_kwargs['target_channel'] = target_channel
             
             conversion_stats = analyze_conversion(raw_data_file, **c_kwargs)
         except Exception as e:
@@ -499,8 +701,11 @@ def main():
     # 3. Marginal Return
     marginal_fig, marginal_insights = marginal_return_analysis(df)
     
+    # 4. Daily Performance Analysis
+    daily_fig, daily_insights = daily_performance_analysis(df, start_date, end_date)
+    
     # Generate HTML Report
-    generate_html_report(df, scale_fig, scenario_fig, marginal_fig, stats_html, scale_insights, scenario_insights, marginal_insights, output_file)
+    generate_html_report(df, scale_fig, scenario_fig, marginal_fig, daily_fig, stats_html, scale_insights, scenario_insights, marginal_insights, daily_insights, output_file)
     
     print("\nAnalysis Complete.")
 

@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IM智己汽车 转化分析报告 (Conversion Analysis Report)</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose'
+        });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            color: #24292e;
+            background-color: #ffffff;
+        }
+        h1 { border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { color: #0366d6; margin-top: 30px; }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            background-color: #f6f8fa;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e4e8;
+        }
+        .stat-box {
+            padding: 10px;
+        }
+        .mermaid { margin: 30px 0; text-align: center; }
+        .plotly-graph-div { margin: 20px 0; border: 1px solid #e1e4e8; border-radius: 6px; }
+    </style>
+</head>
+<body>
+    <h1>IM智己汽车 转化分析报告 (Conversion Analysis Report)</h1>
+<p>Data Source: IM智己汽车_funnel_data.csv</p>
+
+<div class="stats-container">
+    <div class="stat-box">
+        <h3>Cohort Statistics</h3>
+        <ul>
+            <li><strong>Cohort Size:</strong> 10903 Users</li>
+            <li><strong>Global Records:</strong> 17303 Records</li>
+        </ul>
+    </div>
+
+    <div class="stat-box">
+        <h3>归因分析（锁单用户数）</h3>
+        <ul>
+            <li><strong>锁单用户:</strong> 216</li>
+            <li><strong>本渠道锁单 (6)</strong>
+                <ul>
+                    <li>直接锁单 (Direct): 6</li>
+                    <li>归因锁单 (Attributed): 0</li>
+                </ul>
+            </li>
+            <li><strong>辅助锁单 (210)</strong>
+                <ul>
+                    <li>首触辅助 (First Touch): 5</li>
+                    <li>过程助攻 (Middle): 3</li>
+                    <li>锁后触达 (Post-Lock): 202</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="stat-box">
+        <h3>归因分析（小订用户数）</h3>
+        <ul>
+            <li><strong>小订用户:</strong> 349</li>
+            <li><strong>本渠道小订 (148)</strong>
+                <ul>
+                    <li>直接小订 (Direct): 115</li>
+                    <li>归因小订 (Attributed): 33</li>
+                </ul>
+            </li>
+            <li><strong>辅助小订 (201)</strong>
+                <ul>
+                    <li>首触辅助 (First Touch): 33</li>
+                    <li>过程助攻 (Middle): 28</li>
+                    <li>小订后触达 (Post-Intention): 140</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+
+<h2>归因分析（锁单用户数）</h2>
+<div class="mermaid">
+
+graph TD
+    Start[Global 锁单<br/>216 Users]
+    
+    Start --> A{锁单 Channel?}
+    
+    A -->|IM Lock: 6| B{Last Touch?}
+    B -->|IM Last Touch: 6| C[Direct Lock<br/>6 Users]
+    B -->|Other Last Touch: 0| D[Attributed Lock<br/>0 Users]
+    
+    A -->|Other Lock: 210| E{First Touch?}
+    E -->|IM First Touch: 5| F[First Touch Assist<br/>5 Users]
+    E -->|Other First Touch| G{Pre-Lock Interaction?}
+    
+    G -->|Has IM Pre-Lock: 3| H[Middle Assist<br/>3 Users]
+    G -->|No IM Pre-Lock: 202| I[Post-Lock Interaction<br/>202 Users]
+    
+    style Start fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#bfb,stroke:#333,stroke-width:2px
+    style D fill:#dfd,stroke:#333,stroke-width:2px
+    style F fill:#ff9,stroke:#333,stroke-width:2px
+    style H fill:#ff9,stroke:#333,stroke-width:2px
+    style I fill:#eee,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5
+    
+</div>
+<h3>锁单用户详细分类 (Top 50)</h3>
+<div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.3.1.min.js" integrity="sha256-4rD3fugVb/nVJYUv5Ky3v+fYXoouHaBSP20WIJuEiWg=" crossorigin="anonymous"></script>                <div id="b8044ada-11c2-4f89-a5c9-310c162c1574" class="plotly-graph-div" style="height:800px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("b8044ada-11c2-4f89-a5c9-310c162c1574")) {                    Plotly.newPlot(                        "b8044ada-11c2-4f89-a5c9-310c162c1574",                        [{"cells":{"align":["left","right","right","center","center","center","left"],"fill":{"color":"white"},"font":{"color":"#373f4a","size":12},"height":32,"line":{"color":"#e1e4e8"},"values":[["003c24e57be303077c6ea373a5ea03a5","01122e1f4395b8c540ab48126fec652a","04fa3a564bd5b381a18d41b67231ed6d","061a808c13c3018911cda9d01e612deb","06c0fa260f15371ae34e390a0cdf0d35","073d8e1636b664d70fcda85e9db05128","08d422e86a65926b9b6acc8353d0048e","0a7a83fb493c7e533e19bd63c11453d4","0d5b32e01bbed2e145d098dcf22c18a5","0f5611da205a3b64a256efcb37c712a3","11ba40cb9d595a293ccab175b1b87fad","11ce30ad7fbc904fb4538567d62e724f","11d9e623b8ced31e62c88dd73813b6aa","12367a91449bed801c7b9741c7bb79c5","139a55b6eaa2807c27dd07b350ceaa27","141f4bc2fd5ef2f44ac8d8ed43b3ae69","1492fe70f0cd70b363f18495cd78a902","1717a34a82488ab61b96deb0707e9a53","17f9880d25f8a37f47072608c91bdb2a","1ae73302375b8d5765c81441e88e4a5f","1b413eae58ec27df1d7f890b03623ecb","1b79fbe5bd49882b3081f34917d90c98","1bae83aa5c4641a387412c854acee5ef","1c6aa51d4b8c0ca90b36a2ea50928d00","1c8724eeae313d935479b9590bb1a751","1f43427f229a26164d5b44d0ca029f6f","1faa5961c012df16bea5ed31d0508ef7","209d14031e1b90ddc5a63ea2fdb12cbf","2169d6742b864e4cef91ade9b15c405b","2249483fe5bed6555545d600c74ff8db","2472f8ee258b4e496be32965af9d403d","24dd89cc4a0a9d1e453799245f493137","25dfbfa6520cb7906aea48f765f37183","279c02ee3aa02b5cb8988a3632789ebc","2952e2d5acbe7fc2a580fb5698feea3a","2c66f7c964bf37c2d74b457a064431c9","2d906aefdd143187227577ed199bc9c0","2fe7f611fda1a01f0630bb19f81a3a02","310d543d28873b913fe001ec2442c220","31f7ba810f9c6c2df6693898416c3a54","326dddf524a5dc0f4702dc3dfedd6226","34e73a6b194f8c116a88f0779d67e988","36f577005126e6b80299757978b3f47f","36f72917ad0b6831293e8bac90ab1572","378a8c6a48ad08c513fd67dfae8b359f","3a4003e56aa0fb10bfe923ce155b9bbf","3c0cd48969101cebb25201d92c852e37","3d456862098a8e2552fb4d779af3cb6b","40a592a56321f2c7a246844c201c1598","40f75ee34e78e7b4b105e4fefe1db020"],[3,7,2,2,8,3,5,4,4,2,9,3,3,10,7,7,5,2,3,3,9,6,3,4,3,4,2,3,5,3,5,5,10,8,7,4,3,2,2,10,3,3,2,3,3,3,3,2,4,4],[3,1,2,2,8,3,5,4,3,2,9,3,3,10,7,7,5,2,3,3,9,2,3,4,3,4,2,3,5,3,4,5,10,8,2,3,3,2,2,9,3,3,2,3,3,3,3,2,4,4],["\u274c","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c"],["\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c"],["\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c"],["Post-\u9501\u5355 Interaction","First Touch Assist","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Middle Assist","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Middle Assist","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction","Post-\u9501\u5355 Interaction"]]},"header":{"align":["left","right","right","center","center","center","left"],"fill":{"color":"#373f4a"},"font":{"color":"white","size":12},"height":40,"values":["\u003cb\u003emd5\u003c\u002fb\u003e","\u003cb\u003etotal_clues\u003c\u002fb\u003e","\u003cb\u003emin_im_rank\u003c\u002fb\u003e","\u003cb\u003eis_first_touch\u003c\u002fb\u003e","\u003cb\u003eis_last_touch\u003c\u002fb\u003e","\u003cb\u003eis_im_conversion\u003c\u002fb\u003e","\u003cb\u003eCategory\u003c\u002fb\u003e"]},"type":"table"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"margin":{"l":0,"r":0,"t":0,"b":0},"height":800},                        {"responsive": true}                    )                };            </script>        </div>
+
+
+<h2>归因分析（小订用户数）</h2>
+<div class="mermaid">
+
+graph TD
+    Start[Global 小订<br/>349 Users]
+    
+    Start --> A{小订 Channel?}
+    
+    A -->|IM Intention: 148| B{Last Touch?}
+    B -->|IM Last Touch: 115| C[Direct Intention<br/>115 Users]
+    B -->|Other Last Touch: 33| D[Attributed Intention<br/>33 Users]
+    
+    A -->|Other Intention: 201| E{First Touch?}
+    E -->|IM First Touch: 33| F[First Touch Assist<br/>33 Users]
+    E -->|Other First Touch| G{Pre-Intention Interaction?}
+    
+    G -->|Has IM Pre-Intention: 28| H[Middle Assist<br/>28 Users]
+    G -->|No IM Pre-Intention: 140| I[Post-Intention Interaction<br/>140 Users]
+    
+    style Start fill:#f9f,stroke:#333,stroke-width:2px
+    style C fill:#bfb,stroke:#333,stroke-width:2px
+    style D fill:#dfd,stroke:#333,stroke-width:2px
+    style F fill:#ff9,stroke:#333,stroke-width:2px
+    style H fill:#ff9,stroke:#333,stroke-width:2px
+    style I fill:#eee,stroke:#999,stroke-width:1px,stroke-dasharray: 5 5
+    
+</div>
+<h3>小订用户详细分类 (Top 50)</h3>
+<div>                        <script type="text/javascript">window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.3.1.min.js" integrity="sha256-4rD3fugVb/nVJYUv5Ky3v+fYXoouHaBSP20WIJuEiWg=" crossorigin="anonymous"></script>                <div id="4f965f0b-07c8-4d37-bdd5-a2cd01419d34" class="plotly-graph-div" style="height:800px; width:100%;"></div>            <script type="text/javascript">                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("4f965f0b-07c8-4d37-bdd5-a2cd01419d34")) {                    Plotly.newPlot(                        "4f965f0b-07c8-4d37-bdd5-a2cd01419d34",                        [{"cells":{"align":["left","right","right","center","center","center","left"],"fill":{"color":"white"},"font":{"color":"#373f4a","size":12},"height":32,"line":{"color":"#e1e4e8"},"values":[["003c24e57be303077c6ea373a5ea03a5","01c7ed9fd5d8acdb6721110bae88b702","02e0f61e0c06c727e5128af491ddacb2","03347ae8cd5b37504880d411b451b99b","03ad77f359e6045a55c7da5b056d77b9","0441ed064b69f678f36fa00a09ca1a6c","04cef581edc2b2bcd106ac6b12226e27","04fa3a564bd5b381a18d41b67231ed6d","06c0fa260f15371ae34e390a0cdf0d35","073d8e1636b664d70fcda85e9db05128","075d4ed1a03fb855f66672655eac48e5","076d9d43fea5826b41e1c5843c167963","082abc99e743719e6929f231d14da6d8","089b62656c928b646a14647f6706a1c2","08c362d725cce00ff71d8ea6210f5293","0a7a83fb493c7e533e19bd63c11453d4","0aa8ea0f0b8ff98ec0b914a7e2026779","0c5ce4f0abd4ade39490bbbd6ef7173f","0c96dc342067e2b910bb0f6d074b833c","0dea66d73688dd92328c637daba43d88","0f5611da205a3b64a256efcb37c712a3","0f607465d45d997c09e5ee9c01c4abad","0ff035af36cf6ad9d1d9d7ad7d066f1b","10369c741f1cfd3ae3bcef1b451029cc","109cee414dc97effa20673db9a7c63ed","1101930ff73474524327241bb5611dde","11af4ac8b73ac7dc468ae326ca361e38","11ce30ad7fbc904fb4538567d62e724f","13691420817b34448fe5dd7634f71163","139a55b6eaa2807c27dd07b350ceaa27","1636f6578579b7c69e818cea1fc49787","167135acf9093d9d7a9b9b994e3d8d10","19e6e7a3c3d7d695df3db735ce7f9ad6","1a69c5274f5d6ca7192b498e5876f909","1b6046b9d575d7c449a9ca1f3ce06575","1b79fbe5bd49882b3081f34917d90c98","1bae83aa5c4641a387412c854acee5ef","1c1f28b7a7bd423c0274eea6c70904b2","1c6aa51d4b8c0ca90b36a2ea50928d00","1cbbbec4de391dd824d94b7eca02801a","1ea5f73c4a6be20e1e822b752c7d770f","1ef634abec6be037069b8661c8392bbd","1f43427f229a26164d5b44d0ca029f6f","1f7034559fb8147021075fd1619f6107","1f8aee0668a81bde5b32ad9825e14354","1fb5d6b8f63609bee8d09c33f52bcbca","202e27667731c4844166a7ada2d3960f","206bc91414c717b2f3bcb6979cf93230","20d7dc8a070d3476b61f5deafc12e0d9","214ed7793ffd09f42b16df4b52e20703"],[3,6,17,1,1,4,3,2,8,3,2,3,8,3,2,4,4,3,4,5,2,4,5,1,2,1,1,3,2,7,1,3,3,1,1,6,3,5,4,6,9,4,4,2,2,3,15,6,4,4],[3,1,17,1,1,4,3,2,8,3,2,2,8,2,1,4,3,1,4,5,2,4,5,1,1,1,1,3,1,7,1,3,2,1,1,2,3,2,4,5,9,3,4,1,2,3,13,6,4,4],["\u274c","\u2705","\u274c","\u2705","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u2705","\u2705","\u2705","\u2705","\u274c","\u2705","\u274c","\u2705","\u274c","\u274c","\u2705","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c"],["\u274c","\u274c","\u274c","\u2705","\u2705","\u274c","\u2705","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u2705","\u274c","\u2705","\u2705","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c","\u2705","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c"],["\u274c","\u274c","\u274c","\u2705","\u2705","\u274c","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c","\u274c","\u2705","\u274c","\u2705","\u2705","\u274c","\u274c","\u274c","\u2705","\u274c","\u2705","\u2705","\u2705","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c","\u2705","\u274c","\u274c","\u274c","\u274c","\u274c","\u274c"],["Post-\u5c0f\u8ba2 Interaction","First Touch Assist","Post-\u5c0f\u8ba2 Interaction","Direct","Direct","Post-\u5c0f\u8ba2 Interaction","Direct","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Middle Assist","Middle Assist","Post-\u5c0f\u8ba2 Interaction","Attributed","First Touch Assist","Post-\u5c0f\u8ba2 Interaction","Middle Assist","First Touch Assist","Post-\u5c0f\u8ba2 Interaction","Attributed","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Direct","First Touch Assist","Direct","Direct","Post-\u5c0f\u8ba2 Interaction","First Touch Assist","Post-\u5c0f\u8ba2 Interaction","Direct","Post-\u5c0f\u8ba2 Interaction","Attributed","Direct","Direct","Attributed","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Direct","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction","Middle Assist","Middle Assist","Post-\u5c0f\u8ba2 Interaction","Post-\u5c0f\u8ba2 Interaction"]]},"header":{"align":["left","right","right","center","center","center","left"],"fill":{"color":"#373f4a"},"font":{"color":"white","size":12},"height":40,"values":["\u003cb\u003emd5\u003c\u002fb\u003e","\u003cb\u003etotal_clues\u003c\u002fb\u003e","\u003cb\u003emin_im_rank\u003c\u002fb\u003e","\u003cb\u003eis_first_touch\u003c\u002fb\u003e","\u003cb\u003eis_last_touch\u003c\u002fb\u003e","\u003cb\u003eis_im_conversion\u003c\u002fb\u003e","\u003cb\u003eCategory\u003c\u002fb\u003e"]},"type":"table"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"}}},"margin":{"l":0,"r":0,"t":0,"b":0},"height":800},                        {"responsive": true}                    )                };            </script>        </div>
+
+
+</body>
+</html>
+    

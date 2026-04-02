@@ -16,11 +16,17 @@ def main():
     parser = argparse.ArgumentParser(description='Run the Live Stream Analysis Pipeline.')
     parser.add_argument('--excel', required=True, help='Path to the session Excel file (e.g., 直播复盘表2026-02-27.xlsx)')
     parser.add_argument('--csv', required=True, help='Path to the leads CSV file (e.g., IM智己汽车 0201～0227.csv)')
+    parser.add_argument('--channel', '-c', help='Target channel name for conversion analysis (auto-detected from filename if not specified)')
+    parser.add_argument('--start-date', '-s', help='Cohort start date (YYYY-MM-DD), default: from Excel sessions')
+    parser.add_argument('--end-date', '-e', help='Cohort end date (YYYY-MM-DD), default: from Excel sessions')
     
     args = parser.parse_args()
     
     excel_path = os.path.abspath(args.excel)
     csv_path = os.path.abspath(args.csv)
+    target_channel = args.channel
+    start_date = args.start_date
+    end_date = args.end_date
     
     # Generate timestamp for unique reports (Removed for overwrite logic)
     # timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -79,6 +85,12 @@ def main():
         '--output', dashboard_report_path,
         '--conversion-output', conversion_report_path
     ]
+    if target_channel:
+        cmd2.extend(['--channel', target_channel])
+    if start_date:
+        cmd2.extend(['--start-date', start_date])
+    if end_date:
+        cmd2.extend(['--end-date', end_date])
     run_command(cmd2)
     
     print("\n" + "="*50)

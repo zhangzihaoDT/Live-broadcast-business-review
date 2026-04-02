@@ -46,6 +46,7 @@ Examples:
 
     # 完整参数
     python Dashboard_Step2_Conversion.py source/data.csv -o reports/my_report.html -s 2025-08-15 -e 2025-08-17 -c "IM智己汽车"
+    eg:python Dashboard_Step2_Conversion.py source/快慢闪_LS8_5.csv -o reports/LS8_start5_report.html -s 2026-03-26 -e 2026-03-30 -c "快慢闪"
 
 Output:
     生成包含以下内容的 HTML 报告：
@@ -62,8 +63,25 @@ import re
 from datetime import datetime
 import numpy as np
 import plotly.graph_objects as go
+import difflib
 
-def perform_attribution_analysis(df_cohort_global, conversion_col_name, target_channel, conversion_type="锁单"):
+def normalize_channel_name(value):
+    if value is None:
+        return None
+    return str(value).replace('\u3000', ' ').strip()
+
+def parse_cn_date(value):
+    if value is None:
+        return pd.NaT
+    if isinstance(value, float) and np.isnan(value):
+        return pd.NaT
+    s = str(value).strip()
+    if not s:
+        return pd.NaT
+    clean = s.replace('年', '-').replace('月', '-').replace('日', '')
+    return pd.to_datetime(clean, errors='coerce')
+
+def perform_attribution_analysis(df_cohort_global, conversion_col_name, target_channel, conversion_type="锁单", conversion_end_date=None):
     """
     执行归因分析的核心函数
     
@@ -76,7 +94,13 @@ def perform_attribution_analysis(df_cohort_global, conversion_col_name, target_c
     Returns:
     - dict: 包含归因分析结果的字典
     """
-    converted_md5s = df_cohort_global[df_cohort_global[conversion_col_name].notna()]['lc_user_phone_md5'].unique()
+    if conversion_end_date is None:
+        converted_md5s = df_cohort_global[df_cohort_global[conversion_col_name].notna()]['lc_user_phone_md5'].unique()
+    else:
+        conversion_end_date = pd.Timestamp(conversion_end_date)
+        conv_dt = df_cohort_global[conversion_col_name].apply(parse_cn_date)
+        eligible = df_cohort_global[df_cohort_global[conversion_col_name].notna() & conv_dt.notna() & (conv_dt <= conversion_end_date)]
+        converted_md5s = eligible['lc_user_phone_md5'].unique()
     
     print(f"  {conversion_type}用户数: {len(converted_md5s)}")
     
@@ -84,6 +108,8 @@ def perform_attribution_analysis(df_cohort_global, conversion_col_name, target_c
         return None
     
     df_converted = df_cohort_global[df_cohort_global['lc_user_phone_md5'].isin(converted_md5s)].copy()
+    if conversion_end_date is not None:
+        df_converted['_conversion_dt'] = df_converted[conversion_col_name].apply(parse_cn_date)
     
     df_converted['IM 顺位'] = pd.to_numeric(df_converted['IM 顺位'], errors='coerce')
     df_converted['Md5 Clue 总数'] = pd.to_numeric(df_converted['Md5 Clue 总数'], errors='coerce')
@@ -113,31 +139,44 @@ def perform_attribution_analysis(df_cohort_global, conversion_col_name, target_c
         has_pre_conversion_im = False
         conversion_date = None
         
-        if len(user_conversion_dates) > 0:
-            try:
-                conversion_date_str = str(user_conversion_dates[0])
-                clean_date_str = conversion_date_str.replace('年', '-').replace('月', '-').replace('日', '')
-                conversion_date = pd.to_datetime(clean_date_str)
-                
+        if conversion_end_date is not None:
+            conv_dates = group['_conversion_dt'].dropna()
+            conv_dates = conv_dates[conv_dates <= conversion_end_date]
+            if not conv_dates.empty:
+                conversion_date = conv_dates.min()
                 cutoff_time = conversion_date + pd.Timedelta(days=1)
-                
                 pre_conversion_interactions = group[group['parsed_create_time'] < cutoff_time]
-                
                 if not pre_conversion_interactions.empty:
                     im_pre_conversion = pre_conversion_interactions[pre_conversion_interactions['lc_small_channel_name'] == target_channel]
                     has_pre_conversion_im = not im_pre_conversion.empty
-
                     last_interaction = pre_conversion_interactions.sort_values('parsed_create_time').iloc[-1]
                     if last_interaction['lc_small_channel_name'] == target_channel:
                         is_last_touch = True
-            except Exception as e:
+            else:
+                is_last_touch = (max_rank == total_clues_metric) or (max_rank == actual_rows)
+                has_pre_conversion_im = True
+        elif len(user_conversion_dates) > 0:
+            try:
+                conversion_date = parse_cn_date(user_conversion_dates[0])
+                cutoff_time = conversion_date + pd.Timedelta(days=1)
+                pre_conversion_interactions = group[group['parsed_create_time'] < cutoff_time]
+                if not pre_conversion_interactions.empty:
+                    im_pre_conversion = pre_conversion_interactions[pre_conversion_interactions['lc_small_channel_name'] == target_channel]
+                    has_pre_conversion_im = not im_pre_conversion.empty
+                    last_interaction = pre_conversion_interactions.sort_values('parsed_create_time').iloc[-1]
+                    if last_interaction['lc_small_channel_name'] == target_channel:
+                        is_last_touch = True
+            except Exception:
                 is_last_touch = (max_rank == total_clues_metric) or (max_rank == actual_rows)
                 has_pre_conversion_im = True 
         else:
              is_last_touch = (max_rank == total_clues_metric) or (max_rank == actual_rows)
              has_pre_conversion_im = True
         
-        rows_with_conversion = group[group[conversion_col_name].notna()]
+        if conversion_end_date is not None:
+            rows_with_conversion = group[group['_conversion_dt'].notna() & (group['_conversion_dt'] <= conversion_end_date)]
+        else:
+            rows_with_conversion = group[group[conversion_col_name].notna()]
         conversion_channels = rows_with_conversion['lc_small_channel_name'].unique().tolist()
         is_im_conversion = target_channel in conversion_channels
 
@@ -268,11 +307,12 @@ def analyze_conversion(file_path, output_file=None, start_date=None, end_date=No
 
     print(f"Using cohort time range: {start_date} to {end_date}")
     
-    # Extract channel name from filename or use default
-    # Check available channels
     available_channels = df['lc_small_channel_name'].unique()
     print(f"Available channels in CSV: {available_channels}")
-    
+
+    available_channels_list = [str(c) for c in list(available_channels)]
+    normalized_available = {normalize_channel_name(c): c for c in available_channels_list}
+
     if target_channel is None:
         target_channel = "IM智己汽车"
         if "IM智己|未来智舱" in os.path.basename(file_path):
@@ -287,9 +327,35 @@ def analyze_conversion(file_path, output_file=None, start_date=None, end_date=No
         elif "快慢闪" in os.path.basename(file_path) or "CM2" in os.path.basename(file_path):
             if "Popup（门店）" in available_channels:
                 target_channel = "Popup（门店）"
-    
-    if target_channel not in available_channels:
-        print(f"Warning: Channel '{target_channel}' not found in data. Available channels: {list(available_channels)}")
+    else:
+        target_channel = normalize_channel_name(target_channel)
+
+    alias_map = {
+        "快慢闪": "Popup（门店）",
+        "popup（门店）": "Popup（门店）",
+        "Popup（门店）": "Popup（门店）",
+        "popup": "Popup（门店）",
+        "Popup": "Popup（门店）",
+    }
+
+    normalized_target = normalize_channel_name(target_channel)
+    if normalized_target in alias_map:
+        normalized_target = normalize_channel_name(alias_map[normalized_target])
+
+    if normalized_target in normalized_available:
+        target_channel = normalized_available[normalized_target]
+    else:
+        suggestions = difflib.get_close_matches(
+            normalized_target,
+            [k for k in normalized_available.keys() if k is not None],
+            n=5,
+            cutoff=0.6,
+        )
+        if suggestions:
+            suggestion_text = ", ".join([normalized_available[s] for s in suggestions if s in normalized_available])
+            print(f"Warning: Channel '{target_channel}' not found in data. Did you mean: {suggestion_text}")
+        else:
+            print(f"Warning: Channel '{target_channel}' not found in data.")
         return
         
     print(f"Using target channel for analysis: {target_channel}")
@@ -320,7 +386,7 @@ def analyze_conversion(file_path, output_file=None, start_date=None, end_date=No
     print(f"\n3. Attribution Analysis (小订):")
     intention_result = None
     if intention_col_name:
-        intention_result = perform_attribution_analysis(df_cohort_global, intention_col_name, target_channel, "小订")
+        intention_result = perform_attribution_analysis(df_cohort_global, intention_col_name, target_channel, "小订", conversion_end_date=end_date)
     else:
         print("  小订时间列不存在，跳过小订分析。")
 
@@ -331,34 +397,39 @@ def analyze_conversion(file_path, output_file=None, start_date=None, end_date=No
         lock_result=lock_result,
         intention_result=intention_result,
         file_path=file_path,
-        output_file=output_file
+        output_file=output_file,
+        target_channel=target_channel
     )
     
     result = {
         'cohort_size': len(cohort_md5s),
     }
+    
+    # Add lock statistics if available
     if lock_result:
-        result['lock'] = {
-            'converted_users': lock_result['converted_users'],
-            'im_conversion_count': lock_result['im_conversion_count'],
-            'direct_count': lock_result['direct_count'],
-            'attributed_count': lock_result['attributed_count'],
+        result.update({
+            'locked_users': lock_result['converted_users'],
+            'im_lock_count': lock_result['im_conversion_count'],
+            'direct_lock_count': lock_result['direct_count'],
+            'attributed_lock_count': lock_result['attributed_count'],
             'assisted_count': lock_result['assisted_count'],
             'first_touch_assist_count': lock_result['first_touch_assist_count'],
             'middle_assist_count': lock_result['middle_assist_count'],
-            'post_conversion_count': lock_result['post_conversion_count']
-        }
+            'post_lock_count': lock_result['post_conversion_count']
+        })
+    
+    # Add intention statistics if available
     if intention_result:
-        result['intention'] = {
-            'converted_users': intention_result['converted_users'],
-            'im_conversion_count': intention_result['im_conversion_count'],
-            'direct_count': intention_result['direct_count'],
-            'attributed_count': intention_result['attributed_count'],
-            'assisted_count': intention_result['assisted_count'],
-            'first_touch_assist_count': intention_result['first_touch_assist_count'],
-            'middle_assist_count': intention_result['middle_assist_count'],
-            'post_conversion_count': intention_result['post_conversion_count']
-        }
+        result.update({
+            'intention_users': intention_result['converted_users'],
+            'im_intention_count': intention_result['im_conversion_count'],
+            'direct_intention_count': intention_result['direct_count'],
+            'attributed_intention_count': intention_result['attributed_count'],
+            'assisted_intention_count': intention_result['assisted_count'],
+            'first_touch_assist_intention_count': intention_result['first_touch_assist_count'],
+            'middle_assist_intention_count': intention_result['middle_assist_count'],
+            'post_intention_count': intention_result['post_conversion_count']
+        })
     
     return result
 
@@ -461,14 +532,17 @@ def generate_plotly_table(result, conversion_type="锁单"):
     
     return fig.to_html(full_html=False, include_plotlyjs='cdn')
 
-def generate_html_report(cohort_size, global_records, lock_result, intention_result, file_path, output_file=None):
+def generate_html_report(cohort_size, global_records, lock_result, intention_result, file_path, output_file=None, target_channel=None):
     
     if output_file:
         report_filename = output_file
     else:
         report_filename = file_path.replace('.csv', '_report.html')
 
-    title = "IM智己汽车 转化分析报告 (Conversion Analysis Report)"
+    if target_channel is None:
+        title = "转化分析报告 (Conversion Analysis Report)"
+    else:
+        title = f"{target_channel} 转化分析报告 (Conversion Analysis Report)"
     if output_file:
         basename = os.path.basename(output_file)
         if basename.startswith("Conversion_") and basename.endswith(".html"):
@@ -616,6 +690,10 @@ def generate_html_report(cohort_size, global_records, lock_result, intention_res
 </html>
     """
     
+    report_dir = os.path.dirname(report_filename)
+    if report_dir:
+        os.makedirs(report_dir, exist_ok=True)
+
     with open(report_filename, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
